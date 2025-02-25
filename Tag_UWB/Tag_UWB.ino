@@ -48,7 +48,8 @@ void setup() {
 void loop() {
   if (Serial2.available()) {
         String uwbData = Serial2.readString();  // Read distance from UWB module
-        Serial.print("Distance: ");
+        //Serial.print("Distance: ");
         Serial.println(uwbData);  // Show in serial monitor
     }
+  delay(1000);
 }
