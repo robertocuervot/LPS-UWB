@@ -1,21 +1,21 @@
 import serial
 import re
 import turtle
-import math
 
 # Set serial port
-ser = serial.Serial('COM10', 115200, 
+ser = serial.Serial('COM9', 115200, 
                     timeout=1, # 1 second timeout
+                    # Maybe deactivating this was causing problems
                     # dsrdtr=False,  # Deactivates DTR to avoid reset
-                    rtscts=False   # Deactivates RTS to avoid problems with GPIO 0
+                    # rtscts=False   # Deactivates RTS to avoid problems with GPIO 0
                     )
 
 # Extract distance values from the structure they come with when printing in serial
 pattern = re.compile(r"an(\d):([\d.]+)m")
 
 # Define limits for the Turtle graph
-xmin, xmax = -1, 2
-ymin, ymax = -1, 2
+xmin, xmax = -5, 20
+ymin, ymax = -5, 30
 
 # Set Turtle plane
 screen = turtle.Screen()
@@ -25,8 +25,9 @@ screen.tracer(0)  # Desactivar actualización automática para mejor rendimiento
 # Define anchors' positions
 anchors = {
     "an0": (0, 0),  # Anchor 0 
-    "an1": (1, 0),  # Anchor 1
-    "an2": (0.5, 0.86)  # Anchor 2
+    "an1": (9, 0),  # Anchor 1
+    "an2": (4.5, 18)  # Anchor 2
+#    ,"an3": (0, 16)  # Anchor 3
 }
 
 # Draw anchors in Turtle screen
@@ -92,6 +93,9 @@ def actualizar_posicion():
                 if pos:
                     tag.goto(pos)
                     screen.update()  # Refrescar la pantalla
+
+                # Reiniciar para el siguiente conjunto de datos
+                # distances = {"an0": None, "an1": None, "an2": None}
 
     screen.ontimer(actualizar_posicion, 100)  # Llamar a la función cada 100 ms
 

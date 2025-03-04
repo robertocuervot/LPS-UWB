@@ -2,7 +2,7 @@ import serial
 import re
 
 # Set serial port
-ser = serial.Serial('COM10', 115200, 
+ser = serial.Serial('COM9', 115200, 
                     timeout=1, # 1 second timeout
                     # dsrdtr=False,  # Deactivates DTR to avoid reset
                     rtscts=False   # Deactivates RTS to avoid problems with GPIO 0
@@ -30,4 +30,4 @@ while True:
         #         # Only update if the value changed
         #         if last_readings[key] != value:
         #             last_readings[key] = value
-        #             print(f"{key}: {value} m")  # Imprimir valores actualizados
+        #             print(f"{key}: {value} m")  # Print updated values
