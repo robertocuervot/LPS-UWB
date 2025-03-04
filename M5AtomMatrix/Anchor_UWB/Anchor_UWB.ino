@@ -3,7 +3,7 @@
 #define UWB_RX 32  // RX in the Atom Matrix (connect to TX in the UWB module)
 #define UWB_TX 26  // TX in the Atom Matrix (connect to RX in the UWB module)
 
-int ANCHOR_ID = 2; // The id that the anchor will have
+int ANCHOR_ID = 3; // The id that the anchor will have
 
 // Function that displays tag
 void showNumber(int num, uint32_t color) {

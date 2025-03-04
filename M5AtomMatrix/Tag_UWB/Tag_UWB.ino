@@ -38,7 +38,7 @@ void setup() {
   Serial.println("Initializing UWB...");
 
   Serial2.print("AT+RST\r\n"); // Reset module
-  delay(1000);
+  delay(100);
 
   // Verify communication with UWB module
   Serial2.print("AT+version?\r\n"); // Get manufacturer, module series and version number
@@ -47,38 +47,46 @@ void setup() {
       String version = Serial2.readString();
       Serial.println("UWB version: " + version);
   }
-  delay(1000);
+  delay(100);
 
   Serial.println("Setting UWB as tag...");
   // Config UWB module as tag
   for (int b = 0; b < 2; b++) { // Two times according to documentation
-  delay(50);
-  Serial2.print("AT+anchor_tag=0,");  // Set tag mode
-  Serial2.print(TAG_ID);        // Set tag
-  Serial2.print("\r\n");
-  delay(50);
-  Serial2.print("AT+interval=25\r\n");    // Set distance measurement interval (between 5-50 meters)
-  delay(50);
-  Serial2.print("AT+switchdis=1\r\n");    // Switch to control whether to range or not, valid only in tag mode
-  delay(50);
-  if (b == 0) {
-      Serial2.print("AT+RST\r\n"); // Reset
-    }
+    // Serial.println("Setting AT+anchor_tag:");
+    delay(100);
+    Serial2.print("AT+anchor_tag=0,");  // Set tag mode
+    Serial2.print(TAG_ID);        // Set tag
+    Serial2.print("\r\n");
+    // Serial.println("Setting AT+interval:");
+    delay(100);
+    Serial2.print("AT+interval=5\r\n");    // Set distance measurement interval - update rate (between 5-50 meters)
+    // Serial.println("AT+switchdis:");
+    delay(100);
+    Serial2.print("AT+switchdis=1\r\n");    // Switch to control whether to range or not, valid only in tag mode
+    delay(100);
+    if (b == 0) {
+        Serial2.print("AT+RST\r\n"); // Reset
+      }
   }
 
   delay(50);
-  Serial.println("Tag set");
+  Serial.print("Tag set");
 
   showNumber(TAG_ID, 0x00FF00); // Show in the screen the id in green
 
 }
 
 void loop() {
-  if (Serial2.available()) {
-    delay(20);
-    String uwbData = Serial2.readString();  // Read distance from UWB module
-    //Serial.print("Distance: ");
-    Serial.print(uwbData);  // Show in serial monitor
-    delay(2);
-    }
+  // Optimized data reading
+  while (Serial2.available()) { // Use while instead of if
+    String uwbData = Serial2.readStringUntil('\n');  // Read line-by-line
+    Serial.println(uwbData);
+  }
+
+  // if (Serial2.available()) {
+  //   delay(20);
+  //   String uwbData = Serial2.readString();  // Read distance from UWB module
+  //   Serial.print(uwbData);  // Show in serial monitor
+  //   delay(2);
+    // }
 }

@@ -5,10 +5,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # Define anchor positions in 3D space (x, y, z)
 anchors = {
-    "an0": (0, 0, 0),
-    "an1": (2, 0, 0),
-    "an2": (0, 2, 0),
-    "an3": (0, 0, 2)
+    "an0": (8, 0, 0),
+    "an1": (0, 0, 1),
+    "an2": (5, 15, 0),
+    "an3": (0, 15, 2)
 }
 
 def trilateration_3d(d0, d1, d2, d3):
@@ -66,6 +66,10 @@ def plot_3d_position(position):
     plt.legend()
     plt.show()
 
+def test_plot_3d_position(position=None):
+    """Plots the anchors and the estimated tag position in 3D space in real-time"""
+    # Not yet there
+
 def main():
     """Main function to read serial data and compute the 3D position"""
     # Set serial port
@@ -87,12 +91,17 @@ def main():
                     anchor_id = parts[0]
                     distance = float(parts[1].replace('m', ''))  # Remove 'm' and convert to float
                     distances[anchor_id] = distance
+                    print("Dsitances:\n", distances)
                 
                 if all(distances.values()):  # Check if all distances are received
+                    print("Data received correctly")
                     position = trilateration_3d(distances["an0"], distances["an1"], distances["an2"], distances["an3"])
+                    print("Position:\n", position)
                     if position:
+                        print("It should graph something")
                         print(f'Tag Position: {position}')
                         plot_3d_position(position)
+                        # test_plot_3d_position(position)
                     distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Reset distances
         except KeyboardInterrupt:
             print("Exiting...")

@@ -5,14 +5,14 @@ import re
 ser = serial.Serial('COM9', 115200, 
                     timeout=1, # 1 second timeout
                     # dsrdtr=False,  # Deactivates DTR to avoid reset
-                    rtscts=False   # Deactivates RTS to avoid problems with GPIO 0
+                    # rtscts=False   # Deactivates RTS to avoid problems with GPIO 0
                     )
 
 # Extract distance values from the structure they com with when printing in serial
 pattern = re.compile(r"an(\d):([\d.]+)m")
 
 # To save last readings
-last_readings = {"an0": None, "an1": None, "an2": None}
+last_readings = {"an0": None, "an1": None, "an2": None, "an3": None}
 
 while True:
     if ser.in_waiting:
