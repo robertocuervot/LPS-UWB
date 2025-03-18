@@ -1,14 +1,22 @@
-import numpy as np
 import serial
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import numpy as np
+import csv
+import time
+
+# Define the output file
+output_file = "positions.csv"
+
+# Write header to CSV file
+with open(output_file, mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["Timestamp", "X", "Y", "Z"])  # Header row
 
 # Define anchor positions in 3D space (x, y, z)
 anchors = {
-    "an0": (8, 0, 0),
-    "an1": (0, 0, 1),
-    "an2": (5, 15, 0),
-    "an3": (0, 15, 2)
+    "an0": (0, 0, 1.9),
+    "an1": (0, 19.4, 0),
+    "an2": (6, 0, 0),
+    "an3": (6, 19.4, 1.9)
 }
 
 def trilateration_3d(d0, d1, d2, d3):
@@ -42,38 +50,10 @@ def trilateration_3d(d0, d1, d2, d3):
     except np.linalg.LinAlgError:
         return None
 
-def plot_3d_position(position):
-    """Plots the anchors and the estimated tag position in 3D space"""
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d') 
-    # Creates a subplot within the figure
-    # 111 means 1 row, 1 column, and this is the first (and only) subplot
-    # Projection='3d' tells Matplotlib to create a 3D plot instead of the default 2D, this is why Axes3D  was imported
-    
-    # Plot anchors
-    for key, (x, y, z) in anchors.items():
-        ax.scatter(x, y, z, c='red', marker='o', label=key)
-        ax.text(x, y, z, key, color='black')
-    
-    # Plot tag position
-    if position:
-        ax.scatter(position[0], position[1], position[2], c='blue', marker='x', label='Tag')
-    
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Z')
-    ax.set_title('3D Trilateration Visualization')
-    plt.legend()
-    plt.show()
-
-def test_plot_3d_position(position=None):
-    """Plots the anchors and the estimated tag position in 3D space in real-time"""
-    # Not yet there
-
 def main():
     """Main function to read serial data and compute the 3D position"""
     # Set serial port
-    ser = serial.Serial('COM9', 115200, 
+    ser = serial.Serial('COM9', 115200, # COM9: tag 0; COM11: tag 1
                         timeout=1, # 1 second timeout
                         # Maybe deactivating this was causing problems
                         # dsrdtr=False,  # Deactivates DTR to avoid reset
@@ -91,17 +71,21 @@ def main():
                     anchor_id = parts[0]
                     distance = float(parts[1].replace('m', ''))  # Remove 'm' and convert to float
                     distances[anchor_id] = distance
-                    print("Dsitances:\n", distances)
+                    # print("Dsitances:\n", distances)
                 
                 if all(distances.values()):  # Check if all distances are received
-                    print("Data received correctly")
+                    # print("Data received correctly")
                     position = trilateration_3d(distances["an0"], distances["an1"], distances["an2"], distances["an3"])
-                    print("Position:\n", position)
+                    # print("Position:\n", position)
                     if position:
-                        print("It should graph something")
-                        print(f'Tag Position: {position}')
-                        plot_3d_position(position)
-                        # test_plot_3d_position(position)
+                        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")  # Current timestamp
+                        print(f"[{timestamp}] Position: X={position[0]:.2f}, Y={position[1]:.2f}, Z={position[2]:.2f}")
+
+                        # Save to CSV
+                        with open(output_file, mode="a", newline="") as file:
+                            writer = csv.writer(file)
+                            writer.writerow([timestamp, position[0], position[1], position[2]])
+                    
                     distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Reset distances
         except KeyboardInterrupt:
             print("Exiting...")

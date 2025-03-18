@@ -3,7 +3,7 @@
 #define UWB_RX 32  // RX in the Atom Matrix (connect to TX in the UWB module)
 #define UWB_TX 26  // TX in the Atom Matrix (connect to RX in the UWB module)
 
-int TAG_ID = 0;   // The id that the tag will have
+int TAG_ID = 1;   // The id that the tag will have
 
 // Function that displays tag
 void showNumber(int num, uint32_t color) {
@@ -59,7 +59,7 @@ void setup() {
     Serial2.print("\r\n");
     // Serial.println("Setting AT+interval:");
     delay(100);
-    Serial2.print("AT+interval=5\r\n");    // Set distance measurement interval - update rate (between 5-50 meters)
+    Serial2.print("AT+interval=5 \r\n");    // Set distance measurement interval - update rate (between 5-50 meters)
     // Serial.println("AT+switchdis:");
     delay(100);
     Serial2.print("AT+switchdis=1\r\n");    // Switch to control whether to range or not, valid only in tag mode
