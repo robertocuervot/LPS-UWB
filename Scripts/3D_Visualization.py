@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.animation import FuncAnimation
 
-# Path to your CSV file
-csv_file = "positions_tag1_25.csv"
+# Path to your CSV file // positions_tag1_25.csv // positions_tag_0_10.csv
+csv_file = "positions_tag_0_10.csv"
 
 # Define static limits for the axes
 X_LIM = (-2, 8)  # Example: X-axis from 0 to 10 meters

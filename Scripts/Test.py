@@ -2,7 +2,7 @@ import serial
 import re
 
 # Set serial port
-ser = serial.Serial('COM11', 115200, # COM9: tag 0; COM11: tag 1
+ser = serial.Serial('COM9', 115200, # COM9: tag 0; COM11: tag 1
                     timeout=1, # 1 second timeout
                     # dsrdtr=False,  # Deactivates DTR to avoid reset
                     # rtscts=False   # Deactivates RTS to avoid problems with GPIO 0

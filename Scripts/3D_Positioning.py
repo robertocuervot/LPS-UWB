@@ -4,7 +4,7 @@ import csv
 import time
 
 # Define the output file
-output_file = "positions.csv"
+output_file = "3D_positions.csv"
 
 # Write header to CSV file
 with open(output_file, mode="w", newline="") as file:
