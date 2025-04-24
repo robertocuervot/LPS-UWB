@@ -13,9 +13,9 @@ Y_LIM = (-2, 22)  # Example: Y-axis from 0 to 10 meters
 # Define anchor positions in 3D space (x, y, z)
 anchors = {
     "an0": (0, 0),
-    "an1": (6, 0),
-    "an2": (0, 6),
-    "an3": (6, 6)
+    "an1": (5.1, 0),
+    "an2": (0, 16.7),
+    "an3": (5.1, 16.7)
 }
 
 # Initialize figure and 3D plot

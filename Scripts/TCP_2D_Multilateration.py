@@ -1,4 +1,4 @@
-import serial
+import socket
 import numpy as np
 import csv
 import time
@@ -13,6 +13,11 @@ anchors = {
     "an2": (0, 16.7),
     "an3": (5.1, 16.7)
 }
+
+# Define info for TCP server
+HOST = '0.0.0.0'  # Listen on all interfaces
+PORT = 8888       # Port used in M5 Atom
+BUFFER_SIZE = 1024  # Size of each chunk of incoming data
 
 # Calculate the 2D position (x, y) using distances to known anchors via least squares.
 def trilateration_2d(distances_dict):
@@ -62,19 +67,23 @@ def main():
         writer = csv.writer(file)
         writer.writerow(["Timestamp", "X", "Y", "Z"])  # Header row
 
-    # Set serial port
-    ser = serial.Serial('COM9', 115200, # COM9: tag 0; COM11: tag 1
-                        timeout=1, # 1 second timeout
-                        # Maybe deactivating this was causing problems
-                        # dsrdtr=False,  # Deactivates DTR to avoid reset
-                        # rtscts=False   # Deactivates RTS to avoid problems with GPIO 0
-                    )
+    # Create TCP server socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Bind to IP and port
+    server_socket.bind((HOST, PORT))
+    server_socket.listen(1)
+
+    print(f"Listening on {HOST}:{PORT}...")
+
+    # Wait for a client (M5 Atom) to connect
+    conn, addr = server_socket.accept()
+    print(f"Connection established with {addr}")
     
     distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Dictionary to store distances
-    
-    while True:
-        try:
-            line = ser.readline().decode('utf-8').strip()
+    try:
+        while True:
+            line = conn.recv(BUFFER_SIZE).decode('utf-8').strip()
             if line:
                 parts = line.split(':') # Now using split because is more efficient and the data received is consistent
                 if len(parts) == 2 and parts[0] in distances:
@@ -97,10 +106,12 @@ def main():
                             writer.writerow([timestamp, position[0], position[1], 0]) # z=0
                     
                     distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Reset distances
-        except KeyboardInterrupt:
-            print("Exiting...")
-            ser.close()
-            break
+    except KeyboardInterrupt:
+        print("\nExiting...")
+    finally:
+        conn.close()
+        server_socket.close()
+        print("Connection closed.")
 
 if __name__ == "__main__":
     main()
