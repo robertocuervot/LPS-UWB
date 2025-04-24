@@ -3,34 +3,33 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.animation import FuncAnimation
 
-# Path to your CSV file
-csv_file = "positions_tag1_25.csv"
+# Path to your CSV file // positions_tag1_25.csv // positions_tag_0_10.csv
+csv_file = "2D_positions.csv"
 
 # Define static limits for the axes
 X_LIM = (-2, 8)  # Example: X-axis from 0 to 10 meters
 Y_LIM = (-2, 22)  # Example: Y-axis from 0 to 10 meters
-Z_LIM = (-2, 2.5)   # Example: Z-axis from 0 to 3 meters (height)
 
 # Define anchor positions in 3D space (x, y, z)
 anchors = {
-    "an0": (0, 0, 1.9),
-    "an1": (0, 19.4, 0),
-    "an2": (6, 0, 0),
-    "an3": (6, 19.4, 1.9)
+    "an0": (0, 0),
+    "an1": (5.1, 0),
+    "an2": (0, 16.7),
+    "an3": (5.1, 16.7)
 }
 
 # Initialize figure and 3D plot
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d') # Subplot for more flexibility if in the future I want to add another plot
+ax = fig.add_subplot(111) # Subplot for more flexibility if in the future I want to add another plot
 
 # Function to update the plot
 def update(frame):
     ax.clear()  # Clear previous points
 
     # Plot anchors
-    for key, (x, y, z) in anchors.items():
-        ax.scatter(x, y, z, c='black', marker='o', label=key)
-        ax.text(x, y, z, key, color='black')
+    for key, (x, y) in anchors.items():
+        ax.scatter(x, y, c='black', marker='o', label=key)
+        ax.text(x, y, key, color='black')
 
     try:
         # Read the CSV file
@@ -43,19 +42,17 @@ def update(frame):
         # Extract X, Y, Z coordinates
         x = df['X']
         y = df['Y']
-        z = df['Z']
 
         # Plot the trajectory
-        ax.plot(x, y, z, marker='o', linestyle='-', color='b', label="Tag Path")
+        ax.plot(x, y, marker='o', linestyle='-', color='b', label="Tag Path")
 
         # Plot the last position in a different color
-        ax.scatter(x.iloc[-1], y.iloc[-1], z.iloc[-1], color='red', marker='x', s=100, label="Current Position")
+        ax.scatter(x.iloc[-1], y.iloc[-1], color='red', marker='x', s=100, label="Current Position")
 
         # Labels and title
         ax.set_xlabel("X")
         ax.set_ylabel("Y")
-        ax.set_zlabel("Z")
-        ax.set_title("Real-Time 3D Position Tracking")
+        ax.set_title("Real-Time 2D Position Tracking")
         ax.legend()
 
         # Set static axis limits

@@ -1,9 +1,14 @@
 #include <M5Atom.h>
+#include <WiFi.h>
+
+#include "config.h"
 
 #define UWB_RX 32  // RX in the Atom Matrix (connect to TX in the UWB module)
 #define UWB_TX 26  // TX in the Atom Matrix (connect to RX in the UWB module)
 
-int TAG_ID = 0;   // The id that the tag will have
+int TAG_ID = 1;   // The id that the tag will have
+
+WiFiClient client; // WiFi object
 
 // Function that displays tag
 void showNumber(int num, uint32_t color) {
@@ -28,12 +33,27 @@ void showNumber(int num, uint32_t color) {
 }
 
 void setup() {
-  M5.begin(true, true, true);  // Initialize Atom Matrix
+  M5.begin(true, true, true);  // Initialize Atom Matrix (serial, I2C, Display)
   M5.dis.clear(); // Clear every led (including memory)
   Serial.begin(115200);         // Serial to PC
   Serial2.begin(115200, SERIAL_8N1, UWB_RX, UWB_TX);  // Serial to UWB
 
   delay(100);
+
+  // Connect to WiFi
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500); Serial.print("."); // Prints a dot until it succeeds
+  }
+  Serial.println("\nWiFi connected");
+
+  // Open a TCP connection to the given host and port. Tries until succees
+  while (!client.connect(host, port)) {
+    Serial.println("Connection to TCP server failed. Retrying...");
+    delay(2000);
+  }
+  Serial.println("Connected to server!");
 
   Serial.println("Initializing UWB...");
 
@@ -80,13 +100,10 @@ void loop() {
   // Optimized data reading
   while (Serial2.available()) { // Use while instead of if
     String uwbData = Serial2.readStringUntil('\n');  // Read line-by-line
-    Serial.println(uwbData);
-  }
+    Serial.println(uwbData); // Send data to PC via Serial
 
-  // if (Serial2.available()) {
-  //   delay(20);
-  //   String uwbData = Serial2.readString();  // Read distance from UWB module
-  //   Serial.print(uwbData);  // Show in serial monitor
-  //   delay(2);
-    // }
+    if (client.connected()) {
+      client.println(uwbData); // Send data to PC via TCP
+    }
+  }
 }
