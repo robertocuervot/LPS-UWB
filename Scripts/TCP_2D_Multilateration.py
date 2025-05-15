@@ -4,14 +4,14 @@ import csv
 import time
 
 # Define the output file
-output_file = "2D_positions.csv"
+output_file = "2D_TCP_positions.csv"
 
 # Define anchor positions in 3D space (x, y, z)
 anchors = {
     "an0": (0, 0),
-    "an1": (5.1, 0),
-    "an2": (0, 16.7),
-    "an3": (5.1, 16.7)
+    "an1": (6, 0),
+    "an2": (0, 9),
+    "an3": (6, 9)
 }
 
 # Define info for TCP server
@@ -76,21 +76,29 @@ def main():
 
     print(f"Listening on {HOST}:{PORT}...")
 
-    # Wait for a client (M5 Atom) to connect
-    conn, addr = server_socket.accept()
-    print(f"Connection established with {addr}")
-    
-    distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Dictionary to store distances
     try:
+        # Wait for a client (M5 Atom) to connect
+        conn, addr = server_socket.accept()
+        print(f"Connection established with {addr}")
+        
+        distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Dictionary to store distances
+    
         while True:
-            line = conn.recv(BUFFER_SIZE).decode('utf-8').strip()
-            if line:
-                parts = line.split(':') # Now using split because is more efficient and the data received is consistent
-                if len(parts) == 2 and parts[0] in distances:
-                    anchor_id = parts[0]
-                    distance = float(parts[1].replace('m', ''))  # Remove the 'm' and convert to float
-                    distances[anchor_id] = distance
-                    # print("Dsitances:\n", distances)
+            data = conn.recv(BUFFER_SIZE).decode('utf-8').strip()
+            # print("Received:\n", data)
+
+            if data:
+                lines = data.split('\n') # Split data into individual lines
+                for line in lines:
+                    parts = line.split(':')  # Split each line into key-value pairs
+                    if len(parts) == 2 and parts[0] in distances:
+                        anchor_id = parts[0]
+                        try:
+                            distance = float(parts[1].replace('m', ''))  # Remove 'm' and convert to float
+                            distances[anchor_id] = distance
+                        except ValueError:
+                            print(f"Invalid distance format for line: {line}")
+                # print("Distances:\n", distances)
                 
                 if all(distances.values()):  # Check if all distances are received
                     # print("Data received correctly")

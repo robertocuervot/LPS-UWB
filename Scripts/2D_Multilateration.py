@@ -9,9 +9,9 @@ output_file = "2D_positions.csv"
 # Define anchor positions in 3D space (x, y, z)
 anchors = {
     "an0": (0, 0),
-    "an1": (5.1, 0),
-    "an2": (0, 16.7),
-    "an3": (5.1, 16.7)
+    "an1": (6, 0),
+    "an2": (0, 9),
+    "an3": (6, 9)
 }
 
 # Calculate the 2D position (x, y) using distances to known anchors via least squares.
@@ -75,13 +75,14 @@ def main():
     while True:
         try:
             line = ser.readline().decode('utf-8').strip()
+            print("Received:\n", line)
             if line:
                 parts = line.split(':') # Now using split because is more efficient and the data received is consistent
                 if len(parts) == 2 and parts[0] in distances:
                     anchor_id = parts[0]
                     distance = float(parts[1].replace('m', ''))  # Remove the 'm' and convert to float
                     distances[anchor_id] = distance
-                    # print("Dsitances:\n", distances)
+                    print("Distances:\n", distances)
                 
                 if all(distances.values()):  # Check if all distances are received
                     # print("Data received correctly")
