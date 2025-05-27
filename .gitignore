@@ -1,2 +1,4 @@
 *.csv
+!/Docs/2D_Positions.csv
 **/Config.h
+/Scripts/TurtleTest.py

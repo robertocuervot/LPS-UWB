@@ -34,7 +34,7 @@ try:
                 anchor_id = parts[0]
                 distance = float(parts[1].replace('m', ''))  # Remove the 'm' and convert to float
                 distances[anchor_id] = distance
-                print("Dsitances:\n", distances)
+                print("Distances:\n", distances)
 except KeyboardInterrupt:
     print("\nServer manually stopped.")
 finally:

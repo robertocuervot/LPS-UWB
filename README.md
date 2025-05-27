@@ -18,10 +18,15 @@ The following hardware components were used in the development:
 
 More information can be found within each folder:
 
-* M5AtomMatrix -> Arduino scripts for programming the M5 Atom Matrix and UWB module
+* [`M5AtomMatrix`](/M5AtomMatrix) -> Arduino scripts for programming the M5 Atom Matrix and UWB module
 
-* Scripts -> Python scripts for data processing and visualization
+* [`Scripts`](/Scripts) -> Python scripts for data processing and visualization
 
-* Unity -> Unity project for 3D visualization (currently under development)
+* [`Unity`](</Unity/My project (1)>) -> Unity project for 3D visualization (currently under development)
 
-* Docs -> Complete project report (in French).
+* [`Docs`](/Docs) -> Complete project report (in French), CSV output and data visualization examples.
+
+## License
+
+This project is licensed under the **GNU General Public License v3.0**.  
+See the full license in the [`LICENSE`](LICENSE) file. 
