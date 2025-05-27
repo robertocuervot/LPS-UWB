@@ -29,4 +29,10 @@ The code is organized for clarity and simplicity into two main roles: **anchor**
         * Green: tag 
         > ✅ This is included in all main scripts.
 
-    * `WiFi_SoftAP`: Turns the M5 Atom Matrix into a Wi-Fi access point (**SoftAP mode**). This was considered as an alternative for wireless communication between tag and computer. 
+    * `WiFi_SoftAP`: Turns the M5 Atom Matrix into a Wi-Fi access point (**SoftAP mode**). This was considered as an alternative for wireless communication between tag and computer.
+
+## System Setup Example
+
+The following image shows a typical setup with **4 anchors** (red ID numbers) and **1 tag** (green ID number) placed in the middle:
+
+![Anchors and Tag Setup](../Docs/Disposition.jpg)
