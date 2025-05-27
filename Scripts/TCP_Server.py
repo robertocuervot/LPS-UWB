@@ -17,13 +17,14 @@ server_socket.listen(1)
 
 print(f"Listening on {HOST}:{PORT}...")
 
-# Wait for a client (M5 Atom) to connect
-conn, addr = server_socket.accept()
-print(f"Connection established with {addr}")
-
-distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Dictionary to store distances
 
 try:
+    # Wait for a client (M5 Atom) to connect
+    conn, addr = server_socket.accept()
+    print(f"Connection established with {addr}")
+
+    distances = {"an0": None, "an1": None, "an2": None, "an3": None}  # Dictionary to store distances
+
     while True:
         data = conn.recv(BUFFER_SIZE).decode('utf-8').strip()
         if data:
@@ -33,7 +34,7 @@ try:
                 anchor_id = parts[0]
                 distance = float(parts[1].replace('m', ''))  # Remove the 'm' and convert to float
                 distances[anchor_id] = distance
-                print("Dsitances:\n", distances)
+                print("Distances:\n", distances)
 except KeyboardInterrupt:
     print("\nServer manually stopped.")
 finally:
